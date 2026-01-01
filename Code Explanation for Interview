@@ -1,0 +1,122 @@
+🔹 Importing Libraries
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+
+What to say:
+→ NumPy is used for numerical operations, Pandas for data handling, and TensorFlow for building and training the neural network.
+
+
+🔹 Loading Dataset & Splitting X and y
+dataset = pd.read_csv('American Express User Exit Prediction.csv')
+X = dataset.iloc[:, 0:-1].values
+y = dataset.iloc[:, -1].values
+
+What to say:
+→ I loaded the dataset and separated independent features (X) and the target variable (y) for supervised learning.
+
+
+🔹 Label Encoding (Gender Column)
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+X[:, 2] = label_encoder.fit_transform(X[:, 2])
+
+What to say:
+→ Gender is categorical, so I converted it into numerical form using label encoding.
+
+
+
+🔹 One-Hot Encoding (Geography Column)
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+
+ct = ColumnTransformer(
+    transformers=[('encoder', OneHotEncoder(), [1])],
+    remainder='passthrough'
+)
+X = np.array(ct.fit_transform(X))
+
+What to say:
+→ Geography has multiple categories, so I used one-hot encoding to avoid introducing false priority between categories.
+
+
+
+🔹 Train–Test Split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=0
+)
+
+What to say:
+→ I split the dataset into training and testing sets to evaluate the model on unseen data.
+
+
+🔹 Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+What to say:
+→ Feature scaling is essential for ANN because it ensures all features contribute equally and speeds up convergence.
+
+
+🔹 Initializing ANN Model
+ann = tf.keras.models.Sequential()
+
+What to say:
+→ I used a Sequential model since the network follows a simple forward flow of layers.
+
+
+🔹 Adding Hidden Layers
+ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+ann.add(tf.keras.layers.Dense(units=6, activation='relu'))
+
+What to say:
+→ These are fully connected hidden layers using ReLU activation to learn non-linear patterns efficiently.
+
+
+🔹 Output Layer
+ann.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
+
+What to say:
+→ Since it’s a binary classification problem, I used a sigmoid activation function in the output layer.
+
+
+🔹 Compiling the Model
+ann.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+
+What to say:
+→ Adam optimizer is used for faster convergence, and binary cross-entropy is suitable for binary classification.
+
+🔹 Training the Model
+ann.fit(X_train, y_train, batch_size=32, epochs=100)
+
+
+What to say:
+→ The model learns weights through backpropagation over multiple epochs using mini-batches.
+
+🔹 Making Predictions
+y_pred = ann.predict(X_test)
+y_pred = (y_pred > 0.5)
+
+
+What to say:
+→ The model outputs probabilities, which I converted into class labels using a 0.5 threshold.
+
+
+🔹 Core Concepts Used (One-Line)
+Forward Propagation → Passing inputs to output
+Loss Function → Measures prediction error
+Backpropagation → Updates weights
+Gradient Descent → Minimizes loss
+Activation Functions → Add non-linearity
+
+🔹 Final 30-Second Explanation (With Code Context)
+
+I loaded and preprocessed the dataset using encoding and feature scaling. Then I built an ANN using TensorFlow with ReLU hidden layers and a sigmoid output layer. The model was trained using Adam optimizer and binary cross-entropy loss, and predictions were generated using a probability threshold.
